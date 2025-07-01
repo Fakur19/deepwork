@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://cloudconvert.com/
+HostUrl=https://eu-central.storage.cloudconvert.com/tasks/0efb7ae1-06f5-48d0-ac93-2a3c2b47c884/wewok.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20250701%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20250701T052245Z&X-Amz-Expires=86400&X-Amz-Signature=0333a2c229d46f3b9a5516ad5aaaa9044ddd78fa2a60863bbe7bc9be73a6a469&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22wewok.png%22&response-content-type=image%2Fpng&x-id=GetObject

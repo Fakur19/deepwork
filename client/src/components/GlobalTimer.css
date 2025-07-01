@@ -1,0 +1,28 @@
+.global-timer-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    padding: 0.75rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.global-timer-bar .task-name {
+    flex-grow: 1;
+}
+
+.global-timer-bar .time-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 2rem;
+}
+
+.global-timer-bar .controls .btn {
+    margin-left: 0.5rem;
+}
