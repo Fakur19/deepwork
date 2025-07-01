@@ -20,7 +20,7 @@ function App() {
 
     return (
         <TimerProvider>
-            <Router>
+            <Router basename="/">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <div className="container">
                         <Link className="navbar-brand" to="/dashboard">WeWok DeTok</Link>
