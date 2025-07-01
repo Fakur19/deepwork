@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { TimerContext } from '../context/TimerContext';
+import PomodoroTimer from './PomodoroTimer';
 
 const Dashboard = () => {
+    const [activeTimer, setActiveTimer] = useState('stopwatch'); // 'stopwatch' or 'pomodoro'
     const [sessions, setSessions] = useState([]);
-    const [newTask, setNewTask] = useState('');
-    const { startTimer, sessionSaved } = useContext(TimerContext);
+    
+    const { stopwatchTask, setStopwatchTask, startStopwatch, sessionSaved } = useContext(TimerContext);
 
     const fetchSessions = async () => {
         const token = localStorage.getItem('token');
@@ -21,9 +23,8 @@ const Dashboard = () => {
     }, [sessionSaved]);
 
     const handleStart = () => {
-        if (newTask.trim()) {
-            startTimer(newTask);
-            setNewTask(''); // Clear input after starting
+        if (stopwatchTask.trim()) {
+            startStopwatch(stopwatchTask);
         }
     };
 
@@ -31,19 +32,40 @@ const Dashboard = () => {
         <div className="row justify-content-center">
             <div className="col-12 col-md-8">
                 <div className="card text-center">
-                    <h2>Start a New Focus Session</h2>
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="What do you want to work on?"
-                            value={newTask}
-                            onChange={(e) => setNewTask(e.target.value)}
-                        />
+                    <div className="d-flex justify-content-center mb-3">
+                        <button
+                            className={`btn mx-1 ${activeTimer === 'stopwatch' ? 'btn-primary' : 'btn-secondary'}`}
+                            onClick={() => setActiveTimer('stopwatch')}
+                        >
+                            Stopwatch
+                        </button>
+                        <button
+                            className={`btn mx-1 ${activeTimer === 'pomodoro' ? 'btn-primary' : 'btn-secondary'}`}
+                            onClick={() => setActiveTimer('pomodoro')}
+                        >
+                            Pomodoro
+                        </button>
                     </div>
-                    <button className="btn btn-primary" onClick={handleStart} disabled={!newTask.trim()}>
-                        Start New Session
-                    </button>
+
+                    {activeTimer === 'stopwatch' ? (
+                        <>
+                            <h2>Start a New Focus Session</h2>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="What do you want to work on?"
+                                    value={stopwatchTask}
+                                    onChange={(e) => setStopwatchTask(e.target.value)}
+                                />
+                            </div>
+                            <button className="btn btn-primary" onClick={handleStart} disabled={!stopwatchTask.trim()}>
+                                Start New Session
+                            </button>
+                        </>
+                    ) : (
+                        <PomodoroTimer />
+                    )}
                 </div>
                 <div className="card">
                     <h3>Session History</h3>

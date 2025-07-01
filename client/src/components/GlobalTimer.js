@@ -3,28 +3,28 @@ import { TimerContext } from '../context/TimerContext';
 import './GlobalTimer.css';
 
 const GlobalTimer = () => {
-    const { time, task, isActive, pauseTimer, resetTimer, saveSession } = useContext(TimerContext);
+    const { stopwatchTime, stopwatchTask, isStopwatchActive, pauseStopwatch, resetStopwatch, saveSession } = useContext(TimerContext);
 
-    if (!isActive && time === 0) {
+    if (!isStopwatchActive && stopwatchTime === 0) {
         return null; // Don't show if the timer has never started
     }
 
     return (
         <div className="global-timer-bar">
             <div className="task-name">
-                <strong>Task:</strong> {task || 'No active task'}
+                <strong>Task:</strong> {stopwatchTask || 'No active task'}
             </div>
             <div className="time-display">
-                {new Date(time * 1000).toISOString().substr(11, 8)}
+                {new Date(stopwatchTime * 1000).toISOString().substr(11, 8)}
             </div>
             <div className="controls">
-                <button className="btn btn-sm btn-warning" onClick={pauseTimer} disabled={!isActive}>
+                <button className="btn btn-sm btn-warning" onClick={pauseStopwatch} disabled={!isStopwatchActive}>
                     Pause
                 </button>
-                <button className="btn btn-sm btn-danger" onClick={resetTimer}>
+                <button className="btn btn-sm btn-danger" onClick={resetStopwatch}>
                     Reset
                 </button>
-                <button className="btn btn-sm btn-success" onClick={saveSession} disabled={time === 0}>
+                <button className="btn btn-sm btn-success" onClick={() => saveSession(stopwatchTask, stopwatchTime)} disabled={stopwatchTime === 0}>
                     Save & End
                 </button>
             </div>

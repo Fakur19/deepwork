@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const Profile = () => {
@@ -8,6 +8,7 @@ const Profile = () => {
     const [file, setFile] = useState(null);
     const [error, setError] = useState('');
 
+    // Define token and config at the top level
     const token = localStorage.getItem('token');
     const config = { headers: { 'x-auth-token': token } };
 
@@ -23,34 +24,34 @@ const Profile = () => {
             }
         };
         fetchUser();
-    }, [token]);
+    }, [config]); // config is a dependency here
 
-    const handleBioUpdate = async (e) => {
+    const handleBioUpdate = useCallback(async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put('http://localhost:5000/api/profile/bio', { bio }, config);
+            const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/profile/bio`, { bio }, config);
             setUser(res.data);
         } catch (err) {
             setError('Could not update bio.');
         }
-    };
+    }, [bio, config]); // bio and config are dependencies
 
-    const handlePictureLinkUpdate = async (e) => {
+    const handlePictureLinkUpdate = useCallback(async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put('http://localhost:5000/api/profile/picture-link', { profilePicture }, config);
+            const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/profile/picture-link`, { profilePicture }, config);
             setUser(res.data);
         } catch (err) {
             setError('Could not update profile picture.');
         }
-    };
+    }, [profilePicture, config]); // profilePicture and config are dependencies
 
-    const handlePictureUpload = async (e) => {
+    const handlePictureUpload = useCallback(async (e) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('profilePicture', file);
         try {
-            const res = await axios.post('http://localhost:5000/api/profile/picture-upload', formData, {
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/profile/picture-upload`, formData, {
                 ...config,
                 headers: { ...config.headers, 'Content-Type': 'multipart/form-data' }
             });
@@ -58,7 +59,7 @@ const Profile = () => {
         } catch (err) {
             setError('Could not upload profile picture.');
         }
-    };
+    }, [file, config]); // file and config are dependencies
 
     if (!user) {
         return <div>Loading...</div>;
