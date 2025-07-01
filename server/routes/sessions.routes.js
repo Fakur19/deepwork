@@ -18,7 +18,7 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/', auth, async (req, res) => {
     try {
-        const sessions = await Session.find({ user: req.user.id }).sort({ date: -1 });
+        const sessions = await Session.find({ user: req.user.id }).sort({ date: -1 }).limit(5);
         res.json(sessions);
     } catch (error) {
         res.status(400).json({ error: 'Failed to get sessions' });

@@ -5,20 +5,42 @@ const User = require('../models/user.model');
 
 router.get('/', async (req, res) => {
     try {
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // Sunday = 0, Monday = 1, etc.
-        const startDate = new Date();
-        startDate.setDate(today.getDate() - dayOfWeek);
-        startDate.setHours(0, 0, 0, 0);
+        const { filter } = req.query;
+        let startDate;
+        let endDate = new Date(); // Default end date is now
 
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 7);
+        switch (filter) {
+            case 'today':
+                startDate = new Date();
+                startDate.setHours(0, 0, 0, 0);
+                break;
+            case 'week':
+                startDate = new Date();
+                startDate.setDate(endDate.getDate() - endDate.getDay()); // Start of current week (Sunday)
+                startDate.setHours(0, 0, 0, 0);
+                break;
+            case 'month':
+                startDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1); // Start of current month
+                startDate.setHours(0, 0, 0, 0);
+                break;
+            case 'all':
+            default:
+                // No date filter for 'all time'
+                startDate = null;
+                endDate = null;
+                break;
+        }
+
+        const matchStage = {};
+        if (startDate && endDate) {
+            matchStage.date = { $gte: startDate, $lt: endDate };
+        } else if (startDate) { // For 'today', 'week', 'month' where endDate is current time
+            matchStage.date = { $gte: startDate };
+        }
 
         const leaderboard = await Session.aggregate([
             {
-                $match: {
-                    date: { $gte: startDate, $lt: endDate }
-                }
+                $match: matchStage
             },
             {
                 $group: {
