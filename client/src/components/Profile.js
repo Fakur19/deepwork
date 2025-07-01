@@ -14,7 +14,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/profile', config);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/profile`, config);
                 setUser(res.data);
                 setBio(res.data.bio);
                 setProfilePicture(res.data.profilePicture);

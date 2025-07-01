@@ -12,7 +12,7 @@ const PublicProfile = () => {
             try {
                 const token = localStorage.getItem('token');
                 const config = { headers: { 'x-auth-token': token } };
-                const res = await axios.get(`http://localhost:5000/api/profile/${id}`, config);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/profile/${id}`, config);
                 setUser(res.data);
             } catch (err) {
                 setError('Could not fetch user data.');
