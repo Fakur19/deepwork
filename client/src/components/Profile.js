@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 
 const Profile = () => {
@@ -8,9 +8,8 @@ const Profile = () => {
     const [file, setFile] = useState(null);
     const [error, setError] = useState('');
 
-    // Define token and config at the top level
     const token = localStorage.getItem('token');
-    const config = { headers: { 'x-auth-token': token } };
+    const config = useMemo(() => ({ headers: { 'x-auth-token': token } }), [token]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -24,7 +23,7 @@ const Profile = () => {
             }
         };
         fetchUser();
-    }, [config]); // config is a dependency here
+    }, [config]); // config is a dependency here, memoized by token
 
     const handleBioUpdate = useCallback(async (e) => {
         e.preventDefault();
