@@ -40,6 +40,11 @@ app.get('/', (req, res) => {
     res.send('Hello from the backend!');
 });
 
+app.get('/api/ping', (req, res) => {
+  console.log('Server pinged to stay awake.');
+  res.status(200).send('OK');
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });

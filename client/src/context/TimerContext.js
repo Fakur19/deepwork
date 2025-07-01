@@ -26,7 +26,6 @@ export const TimerProvider = ({ children }) => {
     const stopwatchIntervalRef = useRef(null);
     const pomodoroIntervalRef = useRef(null);
 
-    // Function Definitions (moved to top and converted to function declarations for hoisting)
     const saveSession = useCallback(async (taskToSave, durationToSave) => {
         console.log('saveSession called', { taskToSave, durationToSave });
         if (durationToSave > 0 && taskToSave) {
@@ -55,7 +54,7 @@ export const TimerProvider = ({ children }) => {
 
     function resetPomodoro(newPhase = 'work') {
         setIsPomodoroActive(false);
-        clearInterval(pomodoroIntervalRef.current); // Ensure interval is cleared if reset is called externally
+        clearInterval(pomodoroIntervalRef.current);
         switch (newPhase) {
             case 'work':
                 setPomodoroMinutes(Math.floor(WORK_TIME / 60));
@@ -81,7 +80,7 @@ export const TimerProvider = ({ children }) => {
     function startStopwatch(currentTask) {
         setStopwatchTask(currentTask);
         setIsStopwatchActive(true);
-        setIsPomodoroActive(false); // Pause pomodoro if stopwatch starts
+        setIsPomodoroActive(false);
     }
 
     function pauseStopwatch() {
@@ -91,7 +90,7 @@ export const TimerProvider = ({ children }) => {
     function startPomodoro(currentTask) {
         setPomodoroTask(currentTask);
         setIsPomodoroActive(true);
-        setIsStopwatchActive(false); // Pause stopwatch if pomodoro starts
+        setIsStopwatchActive(false);
     }
 
     function pausePomodoro() {
@@ -116,14 +115,12 @@ export const TimerProvider = ({ children }) => {
             pomodoroIntervalRef.current = setInterval(() => {
                 if (pomodoroSeconds === 0) {
                     if (pomodoroMinutes === 0) {
-                        // Time's up for current phase
                         clearInterval(pomodoroIntervalRef.current);
                         setIsPomodoroActive(false);
 
                         if (pomodoroPhase === 'work') {
-                            // Save the work session
                             if (pomodoroTask.trim()) {
-                                saveSession(pomodoroTask, WORK_TIME); // Save the full work duration
+                                saveSession(pomodoroTask, WORK_TIME);
                             }
                             setPomodoroCount(prev => prev + 1);
                             if ((pomodoroCount + 1) % 4 === 0) {
@@ -131,7 +128,7 @@ export const TimerProvider = ({ children }) => {
                             } else {
                                 resetPomodoro('shortBreak');
                             }
-                        } else { // Break phase ends
+                        } else {
                             resetPomodoro('work');
                         }
                     } else {
@@ -143,9 +140,59 @@ export const TimerProvider = ({ children }) => {
                 }
             }, 1000);
         }
-
         return () => clearInterval(pomodoroIntervalRef.current);
     }, [isPomodoroActive, pomodoroMinutes, pomodoroSeconds, pomodoroPhase, pomodoroCount, pomodoroTask, resetPomodoro, saveSession, WORK_TIME]);
+
+    // ====================================================================
+    // START: NEW SERVER KEEP-AWAKE LOGIC
+    // ====================================================================
+
+    // This constant will be true if EITHER timer is active.
+    const isAnyTimerActive = isStopwatchActive || isPomodoroActive;
+
+    useEffect(() => {
+        let keepAwakeIntervalId = null;
+
+        // We only start pinging if at least one timer is active.
+        if (isAnyTimerActive) {
+            const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+            const PING_URL = `${process.env.REACT_APP_API_URL}/api/ping`;
+
+            console.log('A timer is active. Starting server pings.');
+
+            fetch(PING_URL).catch(error => console.error('Initial ping failed:', error));
+
+            // Start an interval to ping the server.
+            keepAwakeIntervalId = setInterval(() => {
+                // We use fetch for this simple request as it's lightweight.
+                fetch(PING_URL)
+                    .then(res => {
+                        if (res.ok) {
+                            console.log('Server ping successful.');
+                        } else {
+                            console.error('Server ping failed with status:', res.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error pinging server:', error);
+                    });
+            }, PING_INTERVAL);
+        }
+
+        // The cleanup function: React runs this when the effect re-runs or the component unmounts.
+        // In our case, it runs when isAnyTimerActive becomes false.
+        return () => {
+            if (keepAwakeIntervalId) {
+                clearInterval(keepAwakeIntervalId);
+                console.log('Timers stopped. Halting server pings.');
+            }
+        };
+    }, [isAnyTimerActive]); // The dependency array: this effect runs only when the active status changes.
+
+    // ====================================================================
+    // END: NEW SERVER KEEP-AWAKE LOGIC
+    // ====================================================================
+
 
     // Used to reset the session saved signal
     useEffect(() => {
