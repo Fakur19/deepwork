@@ -69,12 +69,12 @@ const Profile = () => {
             <h2 className="text-center">Profile</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             <div className="row">
-                <div className="col-md-4 text-center">
+                <div className="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0">
                     <img src={user.profilePicture.startsWith('http') ? user.profilePicture : `${process.env.REACT_APP_API_URL}${user.profilePicture}`} alt="Profile" className="img-fluid rounded-circle profile-img mb-3" />
                     <h3>{user.username}</h3>
                     <p className="text-muted">{user.email}</p>
                 </div>
-                <div className="col-md-8">
+                <div className="col-12 col-md-8">
                     <form onSubmit={handleBioUpdate}>
                         <div className="form-group">
                             <label>Bio</label>

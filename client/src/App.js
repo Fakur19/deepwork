@@ -18,33 +18,43 @@ function App() {
         window.location.href = '/login';
     };
 
+    const handleNavLinkClick = () => {
+        const navbarCollapse = document.getElementById('navbarNav');
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+            navbarCollapse.classList.remove('show');
+        }
+    };
+
     return (
         <TimerProvider>
             <Router basename="/">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <div className="container">
-                        <Link className="navbar-brand" to="/dashboard">WeWok DeTok</Link>
-                        <div className="collapse navbar-collapse">
-                            <ul className="navbar-nav mr-auto">
+                        <Link className="navbar-brand" to="/dashboard" onClick={handleNavLinkClick}>WeWok DeTok</Link>
+                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="collapse navbar-collapse" id="navbarNav">
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/leaderboard">Leaderboard</Link>
+                                    <Link className="nav-link" to="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/profile">Profile</Link>
+                                    <Link className="nav-link" to="/profile" onClick={handleNavLinkClick}>Profile</Link>
                                 </li>
                             </ul>
-                            <ul className="navbar-nav ml-auto">
+                            <ul className="navbar-nav ms-auto">
                                 {localStorage.getItem('token') ? (
                                     <li className="nav-item">
-                                        <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
+                                        <button className="btn btn-danger" onClick={() => { handleLogout(); handleNavLinkClick(); }}>Logout</button>
                                     </li>
                                 ) : (
                                     <>
                                         <li className="nav-item">
-                                            <Link className="nav-link" to="/login">Login</Link>
+                                            <Link className="nav-link" to="/login" onClick={handleNavLinkClick}>Login</Link>
                                         </li>
                                         <li className="nav-item">
-                                            <Link className="nav-link" to="/register">Register</Link>
+                                            <Link className="nav-link" to="/register" onClick={handleNavLinkClick}>Register</Link>
                                         </li>
                                     </>
                                 )}

@@ -5,18 +5,19 @@ import { Link } from 'react-router-dom';
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [error, setError] = useState('');
+    const [filter, setFilter] = useState('week'); // Default to 'week'
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/leaderboard`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/leaderboard?filter=${filter}`);
                 setLeaderboard(res.data);
             } catch (err) {
                 setError('Could not fetch leaderboard data.');
             }
         };
         fetchLeaderboard();
-    }, []);
+    }, [filter]);
 
     const formatDuration = (seconds) => {
         if (seconds < 60) {
@@ -36,7 +37,13 @@ const Leaderboard = () => {
 
     return (
         <div className="card">
-            <h2 className="text-center">Weekly Leaderboard</h2>
+            <h2 className="text-center">Leaderboard</h2>
+            <div className="d-flex flex-wrap justify-content-center mb-3">
+                <button className={`btn btn-sm mx-1 my-1 ${filter === 'today' ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setFilter('today')}>Today</button>
+                <button className={`btn btn-sm mx-1 my-1 ${filter === 'week' ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setFilter('week')}>This Week</button>
+                <button className={`btn btn-sm mx-1 my-1 ${filter === 'month' ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setFilter('month')}>This Month</button>
+                <button className={`btn btn-sm mx-1 my-1 ${filter === 'all' ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setFilter('all')}>All Time</button>
+            </div>
             {error && <div className="alert alert-danger">{error}</div>}
             <ul className="leaderboard-list">
                 {leaderboard.map((user, index) => (

@@ -83,12 +83,31 @@ p{
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 123, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
 .navbar-brand, .nav-link {
     color: #e0e0e0 !important;
 }
 
 .nav-link:hover {
     color: #007bff !important;
+}
+
+/* Collapsed Navbar Styles for better contrast */
+.navbar-collapse {
+    background-color: #1e1e1e; /* Same as navbar background */
+    padding: 1rem;
+    border-radius: 0 0 10px 10px;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #e0e0e0 !important; /* Ensure text is light */
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #007bff !important; /* Hover color */
 }
 
 /* Timer Styles */
@@ -140,44 +159,84 @@ p{
 .leaderboard-item {
     background-color: #2a2a2a;
     color: #aaa;
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
+    padding: 0.75rem 1rem; /* Reduced padding */
+    border-radius: 5px; /* Slightly smaller border-radius */
+    margin-bottom: 0.5rem; /* Reduced margin */
     display: flex;
     align-items: center;
-    transition: transform 0.2s ease;
+    justify-content: space-between; /* Distribute items */
+    transition: background-color 0.2s ease; /* Keep hover for background */
 }
 
 .leaderboard-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #383838;
+    transform: none; /* Remove transform on hover */
+    box-shadow: none; /* Remove box-shadow on hover */
 }
 
 .leaderboard-item .rank {
-    font-size: 1.5rem;
+    font-size: 1.1rem; /* Slightly smaller font */
     font-weight: bold;
     color: #007bff;
-    width: 50px;
+    width: 40px; /* Slightly smaller width */
     text-align: center;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .leaderboard-item .user-info {
     display: flex;
     align-items: center;
     flex-grow: 1;
+    margin-left: 1rem; /* Add margin for spacing */
 }
 
 .leaderboard-item .user-info img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    margin-right: 1rem;
+    margin-right: 0.75rem;
     object-fit: cover;
 }
 
 .leaderboard-item .duration {
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller font size */
     font-weight: 600;
+    flex-shrink: 0; /* Prevent shrinking */
+    text-align: right; /* Align duration to the right */
+}
+
+@media (max-width: 767.98px) { /* For screens smaller than md (768px) */
+    .leaderboard-item {
+        flex-wrap: nowrap; /* Prevent wrapping on small screens for a single row */
+        justify-content: space-between; /* Space out items */
+        text-align: left; /* Align text left */
+        padding: 0.5rem 0.75rem; /* Even smaller padding */
+    }
+
+    .leaderboard-item .rank {
+        width: 30px; /* Even smaller rank width */
+        font-size: 1rem;
+        margin-right: 0.5rem;
+    }
+
+    .leaderboard-item .user-info {
+        flex-direction: row; /* Keep user info horizontal */
+        margin-bottom: 0; /* Remove bottom margin */
+        flex-grow: 1;
+    }
+
+    .leaderboard-item .user-info img {
+        width: 30px;
+        height: 30px;
+        margin-right: 0.5rem;
+        margin-bottom: 0; /* Remove bottom margin */
+    }
+
+    .leaderboard-item .duration {
+        font-size: 0.9rem; /* Even smaller font size for duration on small screens */
+        width: auto; /* Auto width */
+        margin-left: 0.5rem; /* Add left margin */
+    }
 }
 
 /* Profile Styles */
